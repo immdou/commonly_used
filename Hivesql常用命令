@@ -1,0 +1,70 @@
+--------------------- 时间格式：2020-06-01（date）---------------------
+# 日期相加操作
+date_add('2020-06-02',1) # 输出结果: 2020-06-03
+
+# 日期相减操作
+date_sub('2020-06-02',1) # 输出结果: 2020-06-01
+
+# 日期差操作
+datediff('2020-06-02','2020-06-01') # 输出结果: 1
+
+# 取年、月、日
+year('2020-06-01')
+month('2020-06-01')
+day('2020-06-01')
+
+# 计算日期属于星期几
+# 方法一: hive2.2版本以后支持dayofweek函数
+# 方法二: pmod取模, pmod(int a, int b)是a/b余数的绝对值
+#        2020-01-06是星期一
+pmod(datediff('2020-06-02', '2020-01-06')+1, 7) # 输出结果: 2
+
+
+---------------------  时间格式：20200601（string）---------------------
+## 方法一：先转为时间戳再做计算
+# 日期相加操作
+from_timestamp(unix_timestamp('20200602','yyyyMMdd')+86400,'yyyyMMdd')
+# 输出结果: 20200603
+
+## 方法二：datekey先转为date格式
+date2datekey(date_add(datekey2date('20200602'),1)) # 输出结果: 20200603
+
+
+
+--------------------- 时间格式：2020-06-01 12:30:00 ---------------------
+# 转化成日期格式
+to_date('2020-06-01 12:30:00') # 输出结果: 2020-06-01
+
+
+
+--------------------- python transform使用第三方库 ---------------------
+add file hadfs://transformTest/test.py;
+set mapred.cache.archives=hadfs://transformTest/jieba.tar#jieba;
+
+select TRANSFORM(*, *, *)
+using 'python test.py'
+as (*, *, *)
+from table1
+
+
+
+
+--------------------- hivesql的插入、删除 ---------------------
+# 重新写入
+insert overwrite table table_1 partition(p_date='{{ ds_nodash+1 }}',p_prodcut='xx')
+select xx from table2
+
+# 按条件删除数据
+insert overwrite table employee_table select * from employee_table where id>'180203a15f';
+
+# 清空表
+truncate table table_name;
+
+# 删除表
+set drop_enable_toggle=on;
+DROP TABLE IF EXISTS table_name;
+
+# 删除分区
+alter table table_name drop if exists partition (dt='2019-01-01');
+
+
