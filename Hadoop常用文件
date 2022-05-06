@@ -1,0 +1,5 @@
+## Put
+hadoop fs -put < local file > < hdfs file 
+
+## rm
+hadoop fs -rm < hdfs file >
