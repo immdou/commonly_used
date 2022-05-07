@@ -1,0 +1,9 @@
+--------------------- Python统计程序运行时间 ---------------------
+import datetime
+ 
+startTime = datetime.datetime.now()
+ 
+# 中间这里是运行的代码
+ 
+endTime = datetime.datetime.now()
+print("运行的时间是：%ss" % (endTime - startTime).seconds)
